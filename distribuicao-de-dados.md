@@ -20,7 +20,7 @@
 - **Insurance_Provider:** `VARCHAR(255)`
 - **Billing Amount:** `DECIMAL(10, 2)`
 
-### **Cassandra: Data Types (Informações Não Financeiras)**
+### **Cassandra: Data Types**
 
 **Tabela: Patient_Admission**
 
