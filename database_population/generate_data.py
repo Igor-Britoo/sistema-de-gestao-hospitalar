@@ -6,6 +6,22 @@ from random import randint, choice, sample
 from decimal import Decimal
 from datetime import datetime, timedelta
 
+list_of_hospitals = [
+    "City General Hospital", "St. Mary's Medical Center", "River Valley Hospital", "Greenwood Community Hospital", 
+    "Mountainview Health Center", "Lakeside Regional Medical", "Sunrise Children's Hospital", "Maple Grove Hospital", 
+    "Hilltop Memorial Hospital", "Seaside General", "Pinecrest Hospital", "Oceanview Medical Center", 
+    "Brighton Health Institute", "Silver Oak Hospital", "Grandview Medical Center", "Westside General Hospital", 
+    "Riverside Community Hospital", "Blue Ridge Hospital", "Summit Medical Center", "Northside Health System", 
+    "South City General", "Eastwood Medical Clinic", "Palm Valley Hospital", "Cedar Hills Medical", 
+    "Elmwood General", "Golden Valley Hospital", "Parkview Medical", "Highland Community Hospital", 
+    "Central Plains Medical", "Willow Creek Health Center", "Redwood Memorial Hospital", "Meadowbrook Hospital", 
+    "Sunset Valley Medical", "Fairview Regional Hospital", "Evergreen Medical Center", "Springfield General", 
+    "Canyon Ridge Hospital", "Stonebridge Health Clinic", "Forest Hill Hospital", "Clearwater Medical Center", 
+    "Harborview Hospital", "Meadowlands Medical", "Shady Grove Hospital", "Brightwater Medical", 
+    "Silverlake Health Center", "Sunnyside General", "Mountain Peak Hospital", "Eagleview Medical Center", 
+    "Parklands Hospital", "East River General"
+]
+
 list_of_medical_conditions = [
     "Hypertension", "Diabetes", "Asthma", "Chronic Kidney Disease", "Cardiovascular Disease", 
     "Obesity", "Hypothyroidism", "Hyperthyroidism", "Arthritis", "COPD", 
@@ -161,6 +177,18 @@ def configure_mysql():
 def generate_data(n, mysql_cursor, mysql_conn, cassandra_session, mongo_db):
     # MongoDB Collections
     patient_collection = mongo_db['patients']
+    doctors_list = []
+    
+    print('New Doctors:')
+    for _ in range(randint(1, round(n/3))):
+        new_doctor = {
+            'name': 'Dr. ' + fake.name(),
+            'crm': str(fake.random_number(digits=8))
+        }
+        doctors_list.append(new_doctor)
+        print(new_doctor)
+    
+    print('\n================================================================\n')
 
     for _ in range(n):
         # MongoDB (via pymongo)
@@ -197,11 +225,12 @@ def generate_data(n, mysql_cursor, mysql_conn, cassandra_session, mongo_db):
         print(f"MongoDB Patient Data: {patient}\n")
 
         # Cassandra - Patient Admission
+        doctor = choice(doctors_list)
         date_of_admission = fake.date_this_year().strftime('%Y-%m-%d')
         discharge_date = (datetime.strptime(date_of_admission, '%Y-%m-%d') + timedelta(days=randint(1, 15))).strftime('%Y-%m-%d')
-        doctor_name = fake.name()
-        doctor_crm = str(fake.random_number(digits=8))
-        hospital_name = fake.company()
+        doctor_name = doctor['name']
+        doctor_crm = doctor['crm']
+        hospital_name = choice(list_of_hospitals)
         room_number = fake.random_number(digits=3)
         admission_type = choice(['Emergency', 'Elective Surgery', 'Observation'])
 
