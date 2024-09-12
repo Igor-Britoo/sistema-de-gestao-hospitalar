@@ -178,16 +178,17 @@ def generate_data(n, mysql_cursor, mysql_conn, cassandra_session, mongo_db):
     # MongoDB Collections
     patient_collection = mongo_db['patients']
     doctors_list = []
-
-    for _ in range(n/4):
+    
+    print('New Doctors:')
+    for _ in range(randint(1, round(n/3))):
         new_doctor = {
-            'name': fake.name(),
+            'name': 'Dr. ' + fake.name(),
             'crm': str(fake.random_number(digits=8))
         }
         doctors_list.append(new_doctor)
-        print(new_doctor, '\n')
+        print(new_doctor)
     
-    print('================================================================\n')
+    print('\n================================================================\n')
 
     for _ in range(n):
         # MongoDB (via pymongo)
