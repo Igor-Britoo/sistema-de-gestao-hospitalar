@@ -1,30 +1,31 @@
 ### **Consultas no MongoDB (Informações Médicas e Pessoais dos Pacientes)**
 
 1. **Buscar o perfil completo de um paciente pelo CPF:**
-   ```python
-   patient = Patient.objects(cpf="12345678901").first()
+   ```mql
+   db.patients.findOne({ cpf: "12345678901" })
    ```
 
 2. **Listar pacientes por grupo sanguíneo:**
-   ```python
-   patients = Patient.objects(blood_type="O+")
+   ```mql
+   db.patients.find({ blood_type: "O+" })
    ```
 
 3. **Buscar pacientes com um histórico de determinada condição médica:**
-   ```python
-   patients = Patient.objects(medical_condition__icontains="hipertensão")
+   ```mql
+   db.patients.find({ medical_condition: /hipertensão/i })
    ```
 
 4. **Listar pacientes que têm alergias múltiplas:**
-   ```python
-   patients = Patient.objects(__raw__={"$where": "this.allergies.length > 1"})
+   ```mql
+   db.patients.find({ "allergies.1": { $exists: true } })
    ```
 
-5. **Identificar pacientes que não tiveram consulta nos últimos 6 meses:**
-   ```python
-   from datetime import datetime, timedelta
 
-   no_recent_consultations = Patient.objects(last_consultation_date__lte=datetime.now() - timedelta(days=180))
+5. **Identificar pacientes que não tiveram consulta nos últimos 6 meses:**
+   ```mql
+   var sixMonthsAgo = new Date();
+   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+   db.patients.find({ last_consultation_date: { $lte: sixMonthsAgo } })
    ```
 
 ### **Consultas no Cassandra (Histórico de Internações, Exames e Prescrições dos Pacientes)**
